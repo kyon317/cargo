@@ -1,4 +1,6 @@
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BinaryTreeReconstruct {
     HashMap<Integer, Integer> valToIndex = new HashMap<>();
@@ -76,6 +78,42 @@ public class BinaryTreeReconstruct {
 
         root.left = build(preorder, postorder, preStart + 1, preStart + leftSize + 1, postStart,index - 1);
         root.right = build(preorder, postorder, preStart + leftSize + 2, preEnd,  index + 1, postEnd - 1);
+
+        return root;
+    }
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null) return "#";
+
+        String left = serialize(root.left);
+        String right = serialize(root.right);
+        // preorder
+        String curr = root.val + "," + left + "," + right;
+        return curr;
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        List<String> NodeList = new LinkedList<>();
+        for(String s: data.split(",")){
+            NodeList.add(s);
+        }
+
+        return deserialize(NodeList);
+    }
+
+    private TreeNode deserialize(List<String> nodes){
+        if(nodes.isEmpty()) return null;
+
+        String rootVal = nodes.get(0);
+        nodes.remove(0);
+        if(rootVal.equals("#")) return null;
+        int RootIntVal = Integer.parseInt(rootVal);
+        TreeNode root = new TreeNode(RootIntVal);
+
+        root.left = deserialize(nodes);
+        root.right = deserialize(nodes);
 
         return root;
     }

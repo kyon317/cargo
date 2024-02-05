@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -135,4 +136,100 @@ public class BinaryTreeTraverse {
         return root;
     }
 
+    // 230
+    List<Integer> res_ = new ArrayList<>();
+    public int kthSmallest(TreeNode root, int k) {
+        kthSmallest_traverse(root);
+        return res.get(k - 1);
+    }
+    private void kthSmallest_traverse(TreeNode root){
+        if(root == null) return;
+        kthSmallest_traverse(root.left);
+        res.add(root.val);
+        kthSmallest_traverse(root.right);
+    }
+
+    /* BST */
+    // 1038
+    public TreeNode bstToGst(TreeNode root) {
+        bstToGst_traverse(root);
+        return root;
+    }
+    int sum = 0;
+    private void bstToGst_traverse(TreeNode root) {
+        if (root == null)
+            return;
+        bstToGst_traverse(root.right);
+        sum += root.val;
+        root.val = sum;
+        bstToGst_traverse(root.left);
+    }
+
+    // 98
+    public boolean isValidBST(TreeNode root) {
+        return isValidBST_validate(root, null, null);
+    }
+    private boolean isValidBST_validate(TreeNode root, TreeNode min, TreeNode max){
+        if(root == null) return true;
+        if(min !=null && root.val <= min.val) return false;
+        if(max !=null && root.val >= max.val) return false;
+
+        return isValidBST_validate(root.left, min, root) && isValidBST_validate(root.right, root, max);
+    }
+
+    // 700
+    public TreeNode searchBST(TreeNode root, int val) {
+        return search(root,val);
+    }
+    private TreeNode search(TreeNode root, int val){
+        if(root == null) return null;
+        if(root.val == val) return root;
+        else if(root.val < val) return search(root.right, val);
+        else return search(root.left, val);
+    }
+
+    // 701
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        if (root == null) {
+            return new TreeNode(val);
+        }
+        if (root.val > val)
+            root.left = insertIntoBST(root.left, val);
+        else
+            root.right = insertIntoBST(root.right, val);
+
+        return root;
+    }
+
+    // 450
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null)
+            return null;
+        if (root.val == key) {
+            // found, delete;
+            if (root.left == null)
+                return root.right;
+            if (root.right == null)
+                return root.left;
+            if (root.left != null && root.right != null) {
+                TreeNode min = getMin(root.right);
+                root.right = deleteNode(root.right, min.val);
+                min.left = root.left;
+                min.right = root.right;
+                root = min;
+            }
+        } else if (root.val > key) {
+            root.left = deleteNode(root.left, key);
+        } else if (root.val < key) {
+            root.right = deleteNode(root.right, key);
+        }
+        return root;
+    }
+
+    TreeNode getMin(TreeNode node) {
+        // BST 最左边的就是最小的
+        while (node.left != null)
+            node = node.left;
+        return node;
+    }
 }

@@ -16,4 +16,30 @@ public class Stack_mono {
         }
         return res;
     }
+
+    // 150
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stk = new Stack<>();
+        for (String t : tokens) {
+            if (t.equals("+")) {
+                int temp = stk.pop();
+                int temp2 = stk.pop();
+                stk.push(temp + temp2);
+            } else if (t.equals("/")) {
+                int temp = stk.pop();
+                int temp2 = stk.pop();
+                stk.push(temp2 / temp);
+            } else if (t.equals("-")) {
+                int temp = stk.pop();
+                int temp2 = stk.pop();
+                stk.push(temp2 - temp);
+            } else if (t.equals("*")) {
+                int temp = stk.pop();
+                int temp2 = stk.pop();
+                stk.push(temp * temp2);
+            } else stk.push(Integer.valueOf(t));
+        }
+
+        return stk.pop();
+    }
 }

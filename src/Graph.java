@@ -116,4 +116,74 @@ public class Graph {
             onPath[s] = false;
         }
     }
+
+
+    // 886
+    private boolean[] color;
+    private boolean[] visited;
+    private boolean ok = true;
+
+    public boolean possibleBipartition(int n, int[][] dislikes) {
+        List<Integer>[] graph = buildGraph(n, dislikes);
+        color = new boolean[n + 1];
+        visited = new boolean[n + 1];
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i])
+                bfs(i, graph);
+        }
+        return ok;
+    }
+
+    private void bfs(int v, List<Integer>[] graph){
+        Queue<Integer> q = new LinkedList<>();
+        if(!ok) return;
+        visited[v] = true;
+        q.offer(v);
+        while(!q.isEmpty() && ok){
+            int curr = q.poll();
+            for(int w: graph[curr]){
+                if(!visited[w]){
+                    color[w] = !color[curr];
+                    visited[w] = true;
+                    q.offer(w);
+                }else{
+                    if(color[w] == color[curr]){
+                        ok = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void traverse(int v, List<Integer>[] graph) {
+        if (!ok)
+            return;
+        visited[v] = true;
+        for (int w : graph[v]) {
+            if (!visited[w]) {
+                color[w] = !color[v];
+                traverse(w, graph);
+            } else {
+                if (color[w] == color[v]) {
+                    ok = false;
+                    return;
+                }
+            }
+        }
+    }
+
+    private List<Integer>[] buildGraph(int n, int[][] dislikes) {
+        List<Integer>[] graph = new LinkedList[n + 1];
+        for (int i = 0; i <= n; i++)
+            graph[i] = new LinkedList<>();
+        for (int[] pair : dislikes) {
+            int v = pair[0];
+            int w = pair[1];
+            graph[v].add(w);
+            graph[w].add(v);
+        }
+        return graph;
+    }
 }

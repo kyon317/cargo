@@ -1,5 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SlideWindow {
 
@@ -47,5 +46,45 @@ public class SlideWindow {
             if(freq[s.charAt(i) - 'a'] == 1) return i;
         }
         return -1;
+    }
+
+    // 239
+    private static class MonotonicQueue {
+        LinkedList<Integer> list = new LinkedList<>();
+
+        public void push(int n) {
+            while (!list.isEmpty() && list.getLast() < n) {
+                list.pollLast();
+            }
+            list.addLast(n);
+        }
+
+        public int getMax() {
+            return list.getFirst();
+        }
+
+        public void pop(int n) {
+            if (n == list.getFirst())
+                list.pollFirst();
+        }
+    }
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        MonotonicQueue mq = new MonotonicQueue();
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (i < k - 1)
+                mq.push(nums[i]);
+            else {
+                mq.push(nums[i]);
+                res.add(mq.getMax());
+                mq.pop(nums[i - k + 1]);
+            }
+        }
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) {
+            ans[i] = res.get(i);
+        }
+        return ans;
     }
 }
